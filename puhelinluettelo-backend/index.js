@@ -55,6 +55,22 @@ app.delete('/api/persons/:id', (req, res) => {
 
 app.post('/api/persons', (req, res) => {
     const person = req.body
+    if (!person.name) {
+        return res.status(400).json({
+            error: 'Person to be added must have a name'
+        })
+    }
+    if (!person.number) {
+        return res.status(400).json({
+            error: 'Person to be added must have a number'
+        })
+    }
+    if (persons.find(p => p.name === person.name)) {
+        return res.status(400).json({
+            error: "Name must be unique"
+        })
+    }
+
     person.id = Math.floor((Math.random() * 10000000))
     persons = persons.concat(person)
     res.json(person)
