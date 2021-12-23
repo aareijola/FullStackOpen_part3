@@ -47,7 +47,7 @@ app.delete('/api/persons/:id', (req, res, next) => {
         }).catch(error => next(error))
 })
 
-app.post('/api/persons', (req, res) => {
+app.post('/api/persons', (req, res, next) => {
     const person = req.body
     if (!person.name) {
         return res.status(400).json({
@@ -65,14 +65,15 @@ app.post('/api/persons', (req, res) => {
                 error: "Name must be unique"
             })
         }
-    })
-    const newPerson = new Person({
-        name: person.name,
-        number: person.number
-    })
-    newPerson.save().then(savedPerson => {
-        res.json(savedPerson)
-    })
+        const newPerson = new Person({
+            name: person.name,
+            number: person.number
+        })
+        newPerson.save().then(savedPerson => {
+            res.json(savedPerson)
+        }).catch(error => next(error))
+    }).catch(error => next(error))
+    
 })
 
 app.put('/api/persons/:id', (req, res, next) => {
