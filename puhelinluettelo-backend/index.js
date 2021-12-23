@@ -49,31 +49,13 @@ app.delete('/api/persons/:id', (req, res, next) => {
 
 app.post('/api/persons', (req, res, next) => {
     const person = req.body
-    if (!person.name) {
-        return res.status(400).json({
-            error: 'Person to be added must have a name'
-        })
-    }
-    if (!person.number) {
-        return res.status(400).json({
-            error: 'Person to be added must have a number'
-        })
-    }
-    Person.find({}).then(persons => {
-        if (persons.find(p => p.name === person.name)) {
-            return res.status(400).json({
-                error: "Name must be unique"
-            })
-        }
-        const newPerson = new Person({
-            name: person.name,
-            number: person.number
-        })
-        newPerson.save().then(savedPerson => {
-            res.json(savedPerson)
-        }).catch(error => next(error))
-    }).catch(error => next(error)) 
-    
+    const newPerson = new Person({
+        name: person.name,
+        number: person.number
+    })
+    newPerson.save().then(savedPerson => {
+        res.json(savedPerson)
+    }).catch(error => next(error))
 })
 
 app.put('/api/persons/:id', (req, res, next) => {
@@ -97,6 +79,9 @@ const errorHandler = (error, req, res, next) => {
     console.error(error.message)
     if (error.name === 'CastError') {
         return res.status(400).send({error: 'malformatted id'})
+    }
+    if (error.name === 'ValidationError') {
+        return res.status(400).send({error: error.message})
     }
     next(error) 
 }
