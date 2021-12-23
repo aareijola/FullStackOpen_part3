@@ -72,7 +72,7 @@ app.post('/api/persons', (req, res, next) => {
         newPerson.save().then(savedPerson => {
             res.json(savedPerson)
         }).catch(error => next(error))
-    }).catch(error => next(error))
+    }).catch(error => next(error)) 
     
 })
 
